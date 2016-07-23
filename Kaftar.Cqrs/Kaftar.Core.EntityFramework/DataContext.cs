@@ -12,11 +12,12 @@ namespace Kaftar.Core.EntityFramework
         {
             _dbContext = dbContext;
         }
-        public DbSet<TEntity> Set<TEntity>() where TEntity : Entity
+        public DbSet<TEntity> Set<TEntity>() 
+            where TEntity : class,IEntity
         {
             return _dbContext.Set<TEntity>();
         }
-        public void Update<TEntity>(TEntity entity) where TEntity : Entity
+        public void Update<TEntity>(TEntity entity) where TEntity : class, IEntity
         {
             _dbContext.Set<TEntity>().Attach(entity);
             _dbContext.Entry<TEntity>(entity).State= EntityState.Modified;
@@ -25,9 +26,9 @@ namespace Kaftar.Core.EntityFramework
         {
             return _dbContext.SaveChanges();
         }
-        public virtual Task<int> SaveChangesAsync()
+        public virtual async Task<int> SaveChangesAsync()
         {
-            return _dbContext.SaveChangesAsync();
+            return await _dbContext.SaveChangesAsync();
         }
     }
 

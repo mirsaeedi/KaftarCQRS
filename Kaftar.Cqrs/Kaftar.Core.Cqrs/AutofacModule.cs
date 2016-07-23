@@ -1,18 +1,15 @@
 ﻿using System.Reflection;
 using Autofac;
-using CqrsSample.Core.CQRS.CommandStack;
-using CqrsSample.Core.CQRS.CommandStack.CommandHandlers;
-using CqrsSample.Core.CQRS.QueryStack;
-using CqrsSample.Core.CQRS.QueryStack.QueryHandler;
 using Kaftar.Core.Cqrs.CommandStack;
 using Kaftar.Core.Cqrs.CommandStack.CommandHandlers;
 using Kaftar.Core.Cqrs.QueryStack;
+using Kaftar.Core.CQRS.QueryStack.QueryHandler;
 using Kaftar.Core.EntityFramework;
 using Module = Autofac.Module;
 
-namespace CqrsSample.Core
+namespace Kaftar.Core.Cqrs
 {
-    public class AutofacModule:Module
+    public class KaftarBootstrapModule:Module
     {
         protected override void Load(ContainerBuilder builder)
         {

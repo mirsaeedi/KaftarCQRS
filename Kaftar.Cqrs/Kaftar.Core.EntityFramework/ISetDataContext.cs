@@ -5,7 +5,7 @@ namespace Kaftar.Core.EntityFramework
 {
     public interface ISetDataContext
     {
-        DbSet<TEntity> Set<TEntity>() where TEntity : Entity;
-        void Update<TEntity>(TEntity entity) where TEntity : Entity;
+        DbSet<TEntity> Set<TEntity>() where TEntity : class, IEntity;
+        void Update<TEntity>(TEntity entity) where TEntity : class, IEntity;
     }
 }

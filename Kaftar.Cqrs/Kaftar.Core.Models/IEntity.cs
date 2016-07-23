@@ -4,8 +4,8 @@ using System.Runtime.CompilerServices;
 
 namespace Kaftar.Core.Models
 {
-    public class Entity
+    public interface IEntity
     {
-        protected internal long Id { get; set; }
+        long Id { get;set; }
     }
 }

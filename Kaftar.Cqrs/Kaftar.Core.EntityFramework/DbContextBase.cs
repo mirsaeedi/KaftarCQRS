@@ -95,9 +95,9 @@ namespace Kaftar.Core.EntityFramework
 
         private void FillAuditables()
         {
-            foreach (var changeSet in ChangeTracker.Entries<AuditableEntity>())
+            foreach (var changeSet in ChangeTracker.Entries<IAuditableEntity>())
             {
-                var auditableEntity = changeSet.Entity as AuditableEntity;
+                var auditableEntity = changeSet.Entity as IAuditableEntity;
 
                 if (changeSet.Property(p => p.CreateDateTime).IsModified || changeSet.Property(p => p.LastModifiedDateTime).IsModified)
                 {
@@ -144,7 +144,7 @@ namespace Kaftar.Core.EntityFramework
             var entityTypes =
              ModelAssembly
             .GetTypes()
-            .Where(t => t.IsSubclassOf(typeof(Entity)));
+            .Where(t => typeof(IEntity).IsAssignableFrom(t));
 
             foreach (var type in entityTypes)
             {
@@ -165,6 +165,13 @@ namespace Kaftar.Core.EntityFramework
             modelBuilder.Types()
                 .Configure(c => c.ToTable(c.ClrType.Name));
 
+            ModelConfiguration(modelBuilder);
+
+        }
+
+        public virtual void ModelConfiguration(DbModelBuilder modelBuilder)
+        {
+            
         }
     }
 }

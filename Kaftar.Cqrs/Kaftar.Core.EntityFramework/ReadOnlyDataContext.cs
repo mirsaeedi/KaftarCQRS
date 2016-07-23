@@ -12,7 +12,7 @@ namespace Kaftar.Core.EntityFramework
             _dbContext = dbContext;
         }
 
-        public DbQuery<TEntity> Set<TEntity>() where TEntity : Entity
+        public DbQuery<TEntity> Set<TEntity>() where TEntity : class, IEntity
         {
             return _dbContext.Set<TEntity>().AsNoTracking();
         }

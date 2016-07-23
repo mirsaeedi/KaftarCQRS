@@ -5,6 +5,6 @@ namespace Kaftar.Core.EntityFramework
 {
     public interface IReadOnlyDataContext
     {
-        DbQuery<TEntity> Set<TEntity>() where TEntity : Entity;
+        DbQuery<TEntity> Set<TEntity>() where TEntity : class, IEntity;
     }
 }

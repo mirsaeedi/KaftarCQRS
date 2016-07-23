@@ -2,7 +2,7 @@
 
 namespace Kaftar.Core.EntityFramework.Events.Handlers
 {
-    public interface IDeleteHandler<T> where T:Entity
+    public interface IDeleteHandler<T> where T:IEntity
     {
         void PreDelete(T entity);
 

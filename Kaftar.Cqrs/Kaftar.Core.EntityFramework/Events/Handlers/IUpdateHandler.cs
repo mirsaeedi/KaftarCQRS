@@ -2,7 +2,7 @@
 
 namespace Kaftar.Core.EntityFramework.Events.Handlers
 {
-    public interface IUpdateHandler<in T> where T:Entity
+    public interface IUpdateHandler<in T> where T:IEntity
     {
         void PreUpdate(T entity);
 

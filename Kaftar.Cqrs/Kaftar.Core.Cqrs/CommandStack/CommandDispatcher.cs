@@ -29,19 +29,19 @@ namespace Kaftar.Core.Cqrs.CommandStack
 
             if (command.GetType().IsGenericType)
             {
-                if (command.GetType().GetGenericTypeDefinition() == typeof(CreateCqrsCommand<>))
+                if (command.GetType().IsGenericType && command.GetType().GetGenericTypeDefinition() == typeof(CreateCqrsCommand<>))
                 {
                     var handlerType = typeof(CreateCommandHandler<>);
                     return await HandlerCrudCommands(handlerType, command, dataContext);
                 }
 
-                if (command.GetType().GetGenericTypeDefinition() == typeof(UpdateCqrsCommand<>))
+                if (command.GetType().IsGenericType && command.GetType().GetGenericTypeDefinition() == typeof(UpdateCqrsCommand<>))
                 {
                     var handlerType = typeof(UpdateCqrsCommand<>);
                     return await HandlerCrudCommands(handlerType, command, dataContext);
                 }
 
-                if (command.GetType().GetGenericTypeDefinition() == typeof(DeleteCqrsCommand<>))
+                if (command.GetType().IsGenericType && command.GetType().GetGenericTypeDefinition() == typeof(DeleteCqrsCommand<>))
                 {
                     var handlerType = typeof(DeleteCqrsCommand<>);
                     return await HandlerCrudCommands(handlerType, command, dataContext);

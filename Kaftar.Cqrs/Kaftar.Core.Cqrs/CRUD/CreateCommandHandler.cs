@@ -6,11 +6,11 @@ using Kaftar.Core.Models;
 namespace Kaftar.Core.Cqrs.CRUD
 {
     internal class CreateCommandHandler<TEntity> : CommandHandler<CreateCqrsCommand<TEntity>, CqrsCommandResult>
-        where TEntity : Entity
+        where TEntity : class, IEntity
     {
-        protected override CqrsCommandResult PreExecutionValidation(CreateCqrsCommand<TEntity> cqrsCommand)
+        protected override async Task<CqrsCommandResult> PreExecutionValidation(CreateCqrsCommand<TEntity> cqrsCommand)
         {
-            return OkResult(cqrsCommand);
+            return OkResult();
         }
 
         protected override async Task Handle(CreateCqrsCommand<TEntity> cqrsCommand)

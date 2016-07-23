@@ -7,7 +7,7 @@ using Kaftar.Core.Models;
 namespace Kaftar.Core.Cqrs.CRUD
 {
     public class ReadQueryHandler<TEntity>:QueryHandler<ReadCqrsQuery<TEntity>,TEntity[]>
-        where TEntity:Entity
+        where TEntity: class, IEntity
     {
         protected override async Task<TEntity[]> GetResult(ReadCqrsQuery<TEntity> query)
         {

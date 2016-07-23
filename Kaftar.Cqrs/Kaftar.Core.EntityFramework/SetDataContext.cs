@@ -12,12 +12,12 @@ namespace Kaftar.Core.EntityFramework
             DataContext = dataContext;
         }
 
-        public DbSet<TEntity> Set<TEntity>() where TEntity : Entity
+        public DbSet<TEntity> Set<TEntity>() where TEntity : class, IEntity
         {
             return DataContext.Set<TEntity>();
         }
 
-        public void Update<TEntity>(TEntity entity) where TEntity : Entity
+        public void Update<TEntity>(TEntity entity) where TEntity : class, IEntity
         {
             DataContext.Set<TEntity>().Attach(entity);
         }

@@ -27,17 +27,15 @@ namespace Kaftar.Core.Cqrs.QueryStack
 
             var dataContext = _context.Resolve<IReadOnlyDataContext>();
 
-            if (query.GetType().GetGenericTypeDefinition() == typeof(ReadCqrsQuery<>))
+            if (query.GetType().IsGenericType && query.GetType().GetGenericTypeDefinition() == typeof(ReadCqrsQuery<>))
             {
                 var handlerType = typeof(ReadQueryHandler<>);
                 return await HandlerCrudQuery<TQuery, TQueryValueResult>(handlerType, query, dataContext);
             }
-            else
-            {
-                var handler = _context.Resolve<QueryHandler<TQuery, TQueryValueResult>>();
-                handler.DataContext = dataContext;
-                return await handler.Execute(query);
-            }
+
+            var handler = _context.Resolve<QueryHandler<TQuery, TQueryValueResult>>();
+            handler.DataContext = dataContext;
+            return await handler.Execute(query);
 
 
         }

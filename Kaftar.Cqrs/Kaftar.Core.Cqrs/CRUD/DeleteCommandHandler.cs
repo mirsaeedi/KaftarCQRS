@@ -8,7 +8,7 @@ using Kaftar.Core.Models;
 namespace CqrsSample.Core.CQRS.CommandStack.CommandHandlers.CRUDCommandHandlers
 {
     internal class DeleteCommandHandler<TEntity> : CommandHandler<UpdateCqrsCommand<TEntity>, CqrsCommandResult>
-        where TEntity : Entity
+        where TEntity : IEntity
     {
 
         public DeleteCommandHandler() 
@@ -16,9 +16,9 @@ namespace CqrsSample.Core.CQRS.CommandStack.CommandHandlers.CRUDCommandHandlers
 
         }
 
-        protected override CqrsCommandResult PreExecutionValidation(UpdateCqrsCommand<TEntity> command)
+        protected override async Task<CqrsCommandResult> PreExecutionValidation(UpdateCqrsCommand<TEntity> command)
         {
-            return OkResult(command);
+            return OkResult();
         }
 
         protected override Task Handle(UpdateCqrsCommand<TEntity> command)

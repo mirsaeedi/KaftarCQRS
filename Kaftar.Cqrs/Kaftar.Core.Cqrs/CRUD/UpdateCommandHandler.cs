@@ -7,11 +7,11 @@ namespace Kaftar.Core.Cqrs.CRUD
 {
 
     internal class UpdateCommandHandler<TEntity> : CommandHandler<UpdateCqrsCommand<TEntity>, CqrsCommandResult>
-        where TEntity : Entity
+        where TEntity : class, IEntity
     {
-        protected override CqrsCommandResult PreExecutionValidation(UpdateCqrsCommand<TEntity> command)
+        protected override async Task<CqrsCommandResult> PreExecutionValidation(UpdateCqrsCommand<TEntity> command)
         {
-            return OkResult(command);
+            return OkResult();
         }
 
         protected override async Task Handle(UpdateCqrsCommand<TEntity> command)

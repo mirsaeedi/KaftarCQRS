@@ -12,15 +12,18 @@ namespace Kaftar.Core.Cqrs.CommandStack.CommandHandlers
         internal IDataContext InnerDataContext { get;  set; }
         protected ISetDataContext SetDataContext { get; private set; }
         protected bool ParentOfChain { get; set; }
-        internal Entity CommandEntity { get; set; }
+        internal IEntity CommandEntity { get; set; }
+        internal TCommand Command { get; set; }
 
-        internal CommandHandler()
+        public CommandHandler()
         {
             ParentOfChain = true;
         }
 
         public async Task<TCommandResult> Execute(TCommand command)
         {
+            Command = command;
+
             try
             {
                 SetDataContext = new SetDataContext(InnerDataContext);
@@ -31,28 +34,27 @@ namespace Kaftar.Core.Cqrs.CommandStack.CommandHandlers
 
                     GetLock();
 
-                    var commandResult = PreExecutionValidation(command);
+                    var commandResult = await PreExecutionValidation(command);
 
                     if (commandResult.MetaData.WasSuccesfull)
                     {
                         await Handle(command);
-                        PostExecutionValidate(command, commandResult);
+                        await PostExecutionValidate(command, commandResult);
                     }
 
-                    var result = await Execute(command);
-                    SaveCommandResult(result);
+                    SaveCommandResult(commandResult);
 
-                    if (result.MetaData.WasSuccesfull)
+                    if (commandResult.MetaData.WasSuccesfull)
                     {
-                        if (!ParentOfChain) return result;
+                        if (!ParentOfChain) return commandResult;
 
-                        await InnerDataContext.SaveChangesAsync();
-                        OnSucess(command, result);
+                        InnerDataContext.SaveChanges();
+                        await OnSucess(command, commandResult);
                     }
                     else
-                        OnFail(null, command, result);
+                        await OnFail(null, command, commandResult);
 
-                    return result;
+                    return commandResult;
                 }
                 else
                 {
@@ -95,27 +97,32 @@ namespace Kaftar.Core.Cqrs.CommandStack.CommandHandlers
 
         protected virtual void SaveCommandResult(TCommandResult commandResult) { }
 
-        protected virtual void OnSucess(TCommand command, TCommandResult commandResult) { }
+        protected virtual async Task OnSucess(TCommand command, TCommandResult commandResult) { }
 
-        protected virtual void OnFail(Exception exception, TCommand command, TCommandResult commandResult) { }
+        protected virtual async Task OnFail(Exception exception, TCommand command, TCommandResult commandResult) {  }
 
         protected virtual TCommandResult CreateFailedResult(Exception exception, TCommand command)
         {
             return new CqrsCommandResult(-100, exception.ToString(),command) as TCommandResult;
         }
 
-        protected virtual void PostExecutionValidate(TCommand command, TCommandResult commandResult) { }
+        protected virtual async Task PostExecutionValidate(TCommand command, TCommandResult commandResult) {  }
 
-        protected abstract TCommandResult PreExecutionValidation(TCommand command);
-
-        protected CqrsCommandResult OkResult(TCommand command)
+        protected virtual async Task<TCommandResult> PreExecutionValidation(TCommand command)
         {
-            return new CqrsCommandResult(0,null, command);
+            return OkResult();
         }
 
-        protected CqrsCommandResult FailedExceptionResult(TCommand command)
+        protected TCommandResult OkResult()
         {
-            return new CqrsCommandResult(-1, "Unhandled Exception", command);
+            return Activator.CreateInstance(typeof(TCommandResult), 0, null, Command)
+                as TCommandResult;
+        }
+
+        protected TCommandResult FailedExceptionResult()
+        {
+            return Activator.CreateInstance(typeof(TCommandResult), 0, null, Command)
+                as TCommandResult;
         }
 
     }

@@ -7,7 +7,7 @@ using Kaftar.Core.Models;
 namespace Kaftar.Core.Cqrs.CRUD
 {
     public class ReadCqrsQuery<TEntity>:CqrsQuery
-        where TEntity:Entity
+        where TEntity:IEntity
     {
         public ReadCqrsQuery()
         {
