@@ -13,8 +13,8 @@ namespace Kaftar.Core.EntityFramework
         public string DefaultSchema { get; private set; }
         public long UserOfDbContextId { get; set; }
         public Assembly ModelAssembly { get; private set; }
-
-        public DbContextBase(Assembly modelAssembly, string defaultSchema = "dbo")
+        public DbContextBase(Assembly modelAssembly,string connectionString, string defaultSchema = "dbo")
+            :base(connectionString)
         {
             ModelAssembly = modelAssembly;
             DefaultSchema = defaultSchema;

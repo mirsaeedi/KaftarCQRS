@@ -17,17 +17,9 @@ namespace Kaftar.Core.Cqrs
              .RegisterType<QueryDispatcher>()
              .InstancePerRequest();
 
-            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
-                   .AsClosedTypesOf(typeof(IQueryHandler<,>))
-                   .PropertiesAutowired();
-
             builder
                 .RegisterType<CommandDispatcher>()
                 .InstancePerRequest();
-
-            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
-                   .AsClosedTypesOf(typeof(ICommandHandler<,>))
-                   .PropertiesAutowired();
 
             builder.RegisterType<DataContext>()
                 .AsImplementedInterfaces();
