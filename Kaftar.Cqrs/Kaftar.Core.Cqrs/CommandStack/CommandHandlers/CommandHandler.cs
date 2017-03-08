@@ -42,15 +42,15 @@ namespace Kaftar.Core.Cqrs.CommandStack.CommandHandlers
                         await PostExecutionValidate(command, commandResult);
                     }
 
+                    commandResult.MetaData.ResultDateTime = DateTime.Now;
+
                     SaveCommandResult(commandResult);
 
-                    if (commandResult.MetaData.WasSuccesfull)
-                    {
-                        if (!ParentOfChain) return commandResult;
-
+                    if(commandResult.MetaData.PersistData && ParentOfChain)
                         InnerDataContext.SaveChanges();
+
+                    if (commandResult.MetaData.WasSuccesfull)
                         await OnSucess(command, commandResult);
-                    }
                     else
                         await OnFail(null, command, commandResult);
 

@@ -12,11 +12,11 @@ namespace CqrsSample.Core.CQRS
             MessageGuid = messageGuid;
         }
 
-        public int ResultCode { get; private set; }
+        public int ResultCode { get; set; }
 
-        public string ResultDescription { get; private set; }
+        public string ResultDescription { get; set; }
 
-        public DateTime ResultDateTime { get; private set; }
+        public DateTime ResultDateTime { get; internal set; }
 
         public Guid MessageGuid { get; private set; }
 
@@ -25,5 +25,7 @@ namespace CqrsSample.Core.CQRS
         public bool ServerExceptionOccured => ResultCode < 0;
 
         public bool ValidationFailed => ResultCode > 0;
+
+        public bool PersistData => ResultCode >= 0 && ResultCode<500 ;
     }
 }
