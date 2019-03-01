@@ -28,6 +28,6 @@ In CQRS, each usecase maps to a _Command_ or _Query_.
 CQRS sees any usecase that is supposed to change the state of system and write to database as a **Command**.
 
 
-## Queries
+## :books: Queries
 
 CQRS sees any usecase that wants to read data from database as a **Query**.
