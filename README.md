@@ -22,3 +22,12 @@ Install-Package KaftarCQRS
 Kaftar promotes a design style called [Command Query Responsibility Segregation (CQRS)](). Every type of web application could reap the benefits of CQRS regardless of complexity or requirements. CQRS brings clarity to the structure of your application layer and provide easy to follow framework for adding new usecases into the system.
 
 In CQRS, each usecase maps to a _Command_ or _Query_.
+
+## :pencil2: Commands
+
+CQRS sees any usecase that is supposed to change the state of system and write to database as a **Command**.
+
+
+## Queries
+
+CQRS sees any usecase that wants to read data from database as a **Query**.
