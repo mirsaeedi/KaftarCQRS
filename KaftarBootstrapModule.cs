@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Autofac;
 using Kaftar.Core.Cqrs.CommandStack;
-using Kaftar.Core.Cqrs.CommandStack.CommandHandlers;
 using Kaftar.Core.Cqrs.QueryStack;
 using Kaftar.Core.CQRS.QueryStack.QueryHandler;
 using Kaftar.Core.EntityFramework;

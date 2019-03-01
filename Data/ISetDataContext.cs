@@ -1,5 +1,5 @@
-﻿using System.Data.Entity;
-using Kaftar.Core.Models;
+﻿using Kaftar.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kaftar.Core.EntityFramework
 {

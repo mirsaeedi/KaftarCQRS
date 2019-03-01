@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Kaftar.Core.Cqrs.CommandStack.CommandHandlers
+namespace Kaftar.Core.Cqrs.CommandStack
 {
     public interface ICommandHandler<in TCommand, TCommandResult>
           where TCommand : CqrsCommand

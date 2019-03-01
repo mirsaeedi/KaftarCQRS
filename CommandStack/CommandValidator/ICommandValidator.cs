@@ -1,4 +1,4 @@
-﻿namespace Kaftar.Core.Cqrs.CommandStack.CommandValidator
+﻿namespace Kaftar.Core.Cqrs.CommandStack
 {
     internal interface ICommandValidator<in TCommand>
         where TCommand : CqrsCommand

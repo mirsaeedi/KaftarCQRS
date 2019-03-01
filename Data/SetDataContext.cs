@@ -1,11 +1,11 @@
-﻿using System.Data.Entity;
-using Kaftar.Core.Models;
+﻿using Kaftar.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kaftar.Core.EntityFramework
 {
     public class SetDataContext: ISetDataContext
     {
-        private IDataContext DataContext { get; set; }
+        private IDataContext DataContext { get; }
 
         internal SetDataContext(IDataContext dataContext)
         {
@@ -21,6 +21,5 @@ namespace Kaftar.Core.EntityFramework
         {
             DataContext.Set<TEntity>().Attach(entity);
         }
-
     }
 }

@@ -1,25 +1,23 @@
 ﻿using System;
-using System.Data.Entity;
-using System.Data.Entity.Validation;
 using System.Linq;
 using System.Reflection;
 using System.Transactions;
 using Kaftar.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kaftar.Core.EntityFramework
 {
     public abstract class DbContextBase:DbContext
     {
-        public string DefaultSchema { get; private set; }
-        public long UserOfDbContextId { get; set; }
-        public Assembly ModelAssembly { get; private set; }
-        public DbContextBase(Assembly modelAssembly,string connectionString, string defaultSchema = "dbo")
-            :base(connectionString)
+        private long UserOfDbContextId { get; }
+        private string DefaultSchema { get; }
+        private Assembly ModelAssembly { get;}
+
+        public DbContextBase(Assembly modelAssembly, DbContextOptions<DbContextBase> options, string defaultSchema = "dbo")
+            :base(options)
         {
             ModelAssembly = modelAssembly;
             DefaultSchema = defaultSchema;
-            Configuration.LazyLoadingEnabled = false;
-            Configuration.ProxyCreationEnabled = false;
         }
 
         public override int SaveChanges()
@@ -97,11 +95,11 @@ namespace Kaftar.Core.EntityFramework
         {
             foreach (var changeSet in ChangeTracker.Entries<IAuditableEntity>())
             {
-                var auditableEntity = changeSet.Entity as IAuditableEntity;
+                var auditableEntity = changeSet.Entity;
 
                 if (changeSet.Property(p => p.CreateDateTime).IsModified || changeSet.Property(p => p.LastModifiedDateTime).IsModified)
                 {
-                    throw new DbEntityValidationException("Access Violated");
+                    throw new InvalidOperationException($"Access Violated. You are not supposed to modify CreateDateTime and LastModifiedDateTime fileds");
                 }
 
                 if (changeSet.State == EntityState.Modified)
@@ -130,19 +128,18 @@ namespace Kaftar.Core.EntityFramework
             
         }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             MapEntitiesToTables(modelBuilder);
         }
 
-        private void MapEntitiesToTables(DbModelBuilder modelBuilder)
+        private void MapEntitiesToTables(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema(DefaultSchema);
 
-            var entityMethod = typeof(DbModelBuilder).GetMethod("Entity");
+            var entityMethod = typeof(ModelBuilder).GetMethod("Entity");
 
-            var entityTypes =
-             ModelAssembly
+            var entityTypes = ModelAssembly
             .GetTypes()
             .Where(t => typeof(IEntity).IsAssignableFrom(t));
 
@@ -151,27 +148,6 @@ namespace Kaftar.Core.EntityFramework
                 entityMethod.MakeGenericMethod(type)
                       .Invoke(modelBuilder, new object[] { });
             }
-
-            modelBuilder.Properties<long>()
-                   .Where(p => p.Name == "Id")
-                   .Configure(p => p.IsKey());
-
-            modelBuilder.Properties<DateTime>()
-            .Configure(c => c.HasColumnType("datetime2"));
-
-            modelBuilder.Properties<DateTime?>()
-            .Configure(c => c.HasColumnType("datetime2"));
-
-            modelBuilder.Types()
-                .Configure(c => c.ToTable(c.ClrType.Name));
-
-            ModelConfiguration(modelBuilder);
-
-        }
-
-        public virtual void ModelConfiguration(DbModelBuilder modelBuilder)
-        {
-            
         }
     }
 }

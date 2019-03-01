@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Kaftar.Core.Cqrs.CommandStack;
-using Kaftar.Core.Cqrs.CommandStack.CommandHandlers;
 using Kaftar.Core.Cqrs.CRUD;
 using Kaftar.Core.EntityFramework;
 using Kaftar.Core.Models;

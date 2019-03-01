@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using Kaftar.Core.Cqrs.QueryStack.Queries;
 using Kaftar.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kaftar.Core.Cqrs.CRUD
 {
     public class ReadCqrsQuery<TEntity>:CqrsQuery
-        where TEntity:IEntity
+        where TEntity: class,IEntity
     {
         public ReadCqrsQuery()
         {

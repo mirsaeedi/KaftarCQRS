@@ -1,5 +1,6 @@
-﻿using System.Data.Entity.Infrastructure;
-using Kaftar.Core.Models;
+﻿using Kaftar.Core.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Kaftar.Core.EntityFramework
 {
@@ -12,7 +13,7 @@ namespace Kaftar.Core.EntityFramework
             _dbContext = dbContext;
         }
 
-        public DbQuery<TEntity> Set<TEntity>() where TEntity : class, IEntity
+        public IQueryable<TEntity> Set<TEntity>() where TEntity : class, IEntity
         {
             return _dbContext.Set<TEntity>().AsNoTracking();
         }

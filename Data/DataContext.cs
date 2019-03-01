@@ -1,6 +1,6 @@
-﻿using System.Data.Entity;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Kaftar.Core.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kaftar.Core.EntityFramework
 {
@@ -20,7 +20,7 @@ namespace Kaftar.Core.EntityFramework
         public void Update<TEntity>(TEntity entity) where TEntity : class, IEntity
         {
             _dbContext.Set<TEntity>().Attach(entity);
-            _dbContext.Entry<TEntity>(entity).State= EntityState.Modified;
+            _dbContext.Entry(entity).State= EntityState.Modified;
         }
         public virtual int SaveChanges()
         {

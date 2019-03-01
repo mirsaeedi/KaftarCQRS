@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Features.Metadata;
-using Kaftar.Core.Cqrs.CommandStack.CommandHandlers;
 using Kaftar.Core.Cqrs.CRUD;
 using Kaftar.Core.EntityFramework;
 

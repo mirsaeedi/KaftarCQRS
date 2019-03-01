@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Kaftar.Core.EntityFramework;
 using Kaftar.Core.Models;
 
-namespace Kaftar.Core.Cqrs.CommandStack.CommandHandlers
+namespace Kaftar.Core.Cqrs.CommandStack
 {
     public abstract class CommandHandler<TCommand, TCommandResult> : ICommandHandler<TCommand, TCommandResult>
         where TCommand : CqrsCommand
