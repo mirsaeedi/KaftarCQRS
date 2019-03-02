@@ -53,7 +53,7 @@ public class UpdateUserAddressCommandHandler : CommandHandler<UpdateUserAddressC
 }
 ```
 
-As you can see, we do not need to `Save` the results inside the `Handle` method. The idea here is that the developer should not be concerned about anything except doing the business logic and forgetting about the database.
+As you can see, we do not need to `Save` the results inside the `Handle` method. The idea here is that the developer should not be concerned about anything except doing the business logic and forgetting about the database. 'DataContext' is a wrapper over `EntityFramework` which has all methods except 'SaveChanges' and 'SaveChangesAsync'. We believe removing these `Save` methods helps developers to think more in terms of domain. 'SaveChanges' will be called automatically afterwards by Kaftar.
 
 Next, we define an action method for handling this command.
 
