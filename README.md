@@ -38,19 +38,22 @@ public class UpdateUserAddressCommand : CqrsCommand
 
 We do not need to define a field such as `UserId` because CqrsCommand object has this field already and fills it with the id of user who has submitted the command.
 
-
 Next, we need to implement a the logic for handling this command. In CQRS, commands are handled by **CommandHandlers**. In other words, for each _Command_, there is a corresponding _CommandHandler_. In Kaftar, all database operations in a Command Handler happen in a single transaction automatically.
 
+The implementation of a command handler is as follows.
 
 ```C#
-public class UpdateUserCommandHandler : CommandHandler<UpdateUserCommand, CqrsCommandResult>
+public class UpdateUserAddressCommandHandler : CommandHandler<UpdateUserAddressCommand, CqrsCommandResult>
 {
-    protected override Task Handle(UpdateUserCommand command)
+    protected override Task Handle(UpdateUserAddressCommand command)
     {
-  
-    }
+        var user = DataContext.Set<User>().Single(q => q.Id == command.UserId);
+        user.Address = command.UserAddress;
+    }   
 }
 ```
+
+As you can see, we do not need to `Save` the results inside the `Handle` method. The idea here is that the developer should not be concerned about anything except doing the business logic and forgetting about the database.
 
 Next, we define an action method for handling this command.
 
