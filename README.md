@@ -53,7 +53,74 @@ public class UpdateUserAddressCommandHandler : CommandHandler<UpdateUserAddressC
 }
 ```
 
-As you can see, we do not need to `Save` the results inside the `Handle` method. The idea here is that the developer should not be concerned about anything except doing the business logic and forgetting about the database. 'DataContext' is a wrapper over `EntityFramework` which has all methods except 'SaveChanges' and 'SaveChangesAsync'. We believe removing these `Save` methods helps developers to think more in terms of domain. 'SaveChanges' will be called automatically afterwards by Kaftar.
+As you can see, we do not need to `Save` the results inside the `Handle` method. The idea here is that the developer should not be concerned about anything except doing the business logic and forgetting about the database. 'DataContext' is a wrapper over `EntityFramework` which has all methods except `SaveChanges` and `SaveChangesAsync`. We believe removing these `Save` methods helps developers to think more in terms of domain. `SaveChangesAsync` will be called automatically after executing `Handle` by Kaftar.
+
+## Autorization
+
+## Validation
+
+
+```C#
+public class UpdateUserAddressCommandHandler : CommandHandler<UpdateUserAddressCommand, CqrsCommandResult>
+{
+    protected override Task Handle(UpdateUserAddressCommand command)
+    {
+        var user = DataContext.Set<User>().Single(q => q.Id == command.UserId);
+        user.Address = command.NewAddress;
+    }   
+
+    protected override Task<CqrsCommandResult> PreExecutionValidation(UpdateUserAddressCommand command)
+    {
+        if (string.IsNullOrEmpty(command.NewAddress))
+        {
+            return new CqrsCommandResult(100, "New Address Shouldn't be null", command);
+        }
+
+        return OkResult();
+    }
+}
+```
+
+## In Case of Failure
+
+Let's say you want to get notified when a failure happens inside the `Handle` method or Kaftar can't execute `SaveChangesAsync` successfully to persist the change you made in `Handle`. Kaftar asks you to implement such a requirement in a method called `OnFailure`. So, `Handle` method would be super clean and only about the actual business logic. Moreover, when somebody looks at your code, they can easily figure out where to find what. Inside the exception method, you have access to the `exception` that has happend.
+
+```C#
+public class UpdateUserAddressCommandHandler : CommandHandler<UpdateUserAddressCommand, CqrsCommandResult>
+{
+    protected override Task Handle(UpdateUserAddressCommand command)
+    {
+        var user = DataContext.Set<User>().Single(q => q.Id == command.UserId);
+        user.Address = command.NewAddress;
+    }   
+    
+    protected override Task OnFail(Exception exception, UpdateUserAddressCommand command, CqrsCommandResult commandResult)
+    {
+        await SendEmail("support@kaftar",exception)
+    }
+}
+```
+
+## In Case of Success
+
+Let's say we want to send an email to the user after successfully changing the user's address. Since Kaftar promotes separation of concerns, it advises you to implement this requirement inside a method called `OnSucess` instead of having it inside the `Handle` method. `OnSuccess` is executed by Kaftar, if `Handle` is executed successfully.
+
+
+```C#
+public class UpdateUserAddressCommandHandler : CommandHandler<UpdateUserAddressCommand, CqrsCommandResult>
+{
+    protected override Task Handle(UpdateUserAddressCommand command)
+    {
+        var user = DataContext.Set<User>().Single(q => q.Id == command.UserId);
+        user.Address = command.NewAddress;
+    }   
+    
+    protected override Task OnSucess(UpdateUserAddressCommand command, CqrsCommandResult commandResult)
+    {
+        await SendEmail(command.UserId);
+    }
+}
+```
 
 Next, we define an action method for handling this command.
 
