@@ -25,7 +25,43 @@ In CQRS, each usecase maps to a _Command_ or _Query_.
 
 ## :pencil2: Commands
 
-CQRS sees any usecase that is supposed to change the state of system and write to database as a **Command**.
+CQRS sees any usecase that is supposed to change the state of system and write to database as a **Command**. So, for any request that is going to come from client and is supposed to write to database, at first we need to create a _Command_ object. **Command** is simply a POCO which consists of just fields. **A command is a poco object encompasses user's request**.
+
+Let's say we want to implement a usecase for updating the user's address. First, we create a Command to define the form of request that can submit by client.
+
+```C#
+public class UpdateUserAddressCommand : CqrsCommand
+{
+    public string NewAddress {get; set;}
+}
+```
+
+We do not need to define a field such as `UserId` because CqrsCommand object has this field already and fills it with the id of user who has submitted the command.
+
+
+Next, we need to implement a the logic for handling this command. In CQRS, commands are handled by **CommandHandlers**. In other words, for each _Command_, there is a corresponding _CommandHandler_. In Kaftar, all database operations in a Command Handler happen in a single transaction automatically.
+
+
+```C#
+public class UpdateUserCommandHandler : CommandHandler<UpdateUserCommand, CqrsCommandResult>
+{
+    protected override Task Handle(UpdateUserCommand command)
+    {
+  
+    }
+}
+```
+
+Next, we define an action method for handling this command.
+
+```C#
+public IActionResult UpdateUserAddress(UpdateUserAddressCommand command)
+{
+   
+}
+
+```
+
 
 
 ## :books: Queries
