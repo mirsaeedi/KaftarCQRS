@@ -1,6 +1,12 @@
 # Kaftar
 
-Kaftar provides you with the structure that you need for designing your application in [CQRS](https://martinfowler.com/bliki/CQRS.html) style. Kaftar helps you with coming up with a clear and well separated [Application Layer](). Kaftar does not provide any facilities for separting read from writes in your physical infrastructure layer. `CQRS` is a way for writing the application layer in a very well-organized way. In this approach, any request from users is either a  `Command` or a `Query` which execute by their corresponding `CommandHandler` or `QueryHandler` respectively.
+Kaftar provides you with the structure that you need for designing your application in [CQRS](https://martinfowler.com/bliki/CQRS.html) style. Kaftar helps you with coming up with a clear and well separated [Application Layer](). Kaftar does not provide any facilities for separting read from writes in your physical infrastructure layer.
+
+`CQRS` is a way for writing the application layer in a very well-organized way. In this approach, any request from users is either a `Command` or a `Query` which execute by their corresponding `CommandHandler` or `QueryHandler` respectively.
+
+In Kaftar, `CommandHanlder`s and `QueryHandler`s serve as a template for implementing different aspects of a usecase such as _Authorization_, _Validation_, _Handling Request_, _On Failure_ and _On Success_. Each of these aspects, implement in their own dedicated method. 
+
+Kaftar's structure results in a highly _Readable_, _Maintainable_ and _Consistent_ system design. Using Kaftar, when somebody wants to add or modify a feature in system, they exactly know what are the steps for implementing a new feature or where they need to look for if they want to modify something.
 
 
 # :moneybag: Advantages 
