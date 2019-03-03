@@ -1,8 +1,12 @@
 # Kaftar
 
-Kaftar provides you with the structure that you need for designing your application in [CQRS](https://martinfowler.com/bliki/CQRS.html) style. Kaftar helps you with coming up with a clear and well separated [Application Layer](). Kaftar does not provide any facilities for separting read from writes in your physical infrastructure layer.
+Kaftar provides you with the structure that you need for designing your application in [CQRS](https://martinfowler.com/bliki/CQRS.html) style. Kaftar helps you with coming up with a clear and well separated [Application Layer](). (It does not provide any facilities for separating read from writes in your physical infrastructure layer.)
 
-`CQRS` is a way for writing the application layer in a very well-organized way. In this approach, any request from users is either a `Command` or a `Query` which execute by their corresponding `CommandHandler` or `QueryHandler` respectively.
+`CQRS` is a way for writing the *Application Layer* in a very well-organized way. In this approach, any request from users is either a `Command` or a `Query` which gets executed by their corresponding `CommandHandler` or `QueryHandler` respectively. 
+
+**Command**: represents a user request that has a side effect by changing the system's state. Requests which lead to any of the _Update_, _Create_, _Delete_ operations on system's data, are considered as a command.
+
+**Query**: represents a user request that has no side effect on system's state and only wants to _Read_ data. 
 
 In Kaftar, `CommandHanlder`s and `QueryHandler`s serve as a template for implementing different aspects of a usecase such as _Authorization_, _Validation_, _Handling Request_, _On Failure_ and _On Success_. Each of these aspects, implement in their own dedicated method. 
 
