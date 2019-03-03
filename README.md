@@ -35,7 +35,7 @@ In CQRS, each usecase maps to a _Command_ or _Query_.
 
 To implement a usecase that is seen as a Command, we need to take 2 steps
 
-1. Create a _Command_ class. **Command** is a simple POCO that encompasses user's request.
+1. Create a _Command_ class. **Command** is a simple POCO inherited from **CqrsCommand** that encompasses user's request.
 2. Create a _CommandHandler_ class to execute the _Command_.
 
 Let's say we want to implement a usecase for updating the user's address. First, we create a Command to define the form of the request that can be issued by client.
@@ -160,4 +160,79 @@ public class UpdateUserAddressCommandHandler : CommandHandler<UpdateUserAddressC
 
 ## :books: Queries
 
-CQRS sees any usecase that wants to read data from database as a **Query**.
+CQRS sees any usecase that wants to read data from database as a **Query**. It takes three steps to fully implement a Query.
+
+1. **Query**: A POCO object inherited from **CqrsQuery** which represents the form of a request issued by client.
+2. **QueryResult**: A POCO object for defining the shape of the desired result to return to user.
+3. **QueryHandler**: Implements the required logic for gathering data from datastore and returning it back to user. It is inherited from `QueryHandler`.
+
+
+Let's say we have a usecase that asks for returning orders of a user filtered by status and date. First, we define a `Query` called `GetUserOrdersQuery` as follows.
+
+```C#
+
+public class GetUserOrdersQuery : CqrsQuery
+{
+    public DateTime? FromDateTime { get; set; }
+
+    public DateTime? ToDateTime { get; set; }
+
+    public OrderStatus? OrderStatus { get; set; }
+}
+```
+
+We do not need to define a field such as `UserId`,`IpAddress`,`IssueDateTime` because CqrsQuery object has this fields already and fills them with appropriate values automatically.
+
+Next, we define the desired `QueryResult` that we want to return to user.
+
+```C#
+
+public class GetUserOrdersQueryResult
+{
+    
+    public Order[] Orders {get;set;}
+   
+    public class Order 
+    {
+        public DateTime DateTime { get; set; }
+
+        public String Address { get; set; }
+
+        public String ProductName { get; set; }
+
+        public long ProductId { get; set; }
+
+        public OrderStatus OrderStatus { get; set; }
+    }
+}
+```
+
+In QueryResults, we avoid using domain types or reusing other QueryResults. This make each Query completely separate from other Queries and consequently we can change each of them without being worried about side-effects. Here, we define a custom `Order` as a DTO that we want to return to user.
+
+
+
+```C#
+
+public class GetUserOrderQueryHandler:QueryHandler<GetUserOrdersQuery, GetUserOrdersQueryResult>
+{
+    protected override Task<GetUserOrdersQueryResult> GetResult(GetUserOrdersQuery query)
+    {
+        var orders  = DataContext.Set<Order>().Where(q => q.UserId == query.UserId
+        && (q.DateTime >= query.FromDateTime && q.DateTime <= query.ToDateTime))
+            .ToArray();
+
+        var result = new GetUserOrdersQueryResult()
+        {
+            Orders = orders.Select(q => new GetUserOrdersQueryResult.Order()
+            {
+                Address = q.Address,
+                ProductId = q.ProductId,
+                ProductName = q.ProductName,
+                DateTime = q.DateTime.Value,
+                OrderStatus = q.OrderStatus,
+            }).ToArray()
+         };
+    }
+}
+
+```
