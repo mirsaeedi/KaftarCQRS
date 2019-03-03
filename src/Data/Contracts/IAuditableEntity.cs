@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kaftar.Core.Models
+namespace Kaftar.Core.Data
 {
     public interface IAuditableEntity:IEntity
     {

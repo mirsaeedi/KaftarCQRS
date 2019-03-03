@@ -1,27 +1,20 @@
 ﻿using System.Threading.Tasks;
-using Kaftar.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kaftar.Core.EntityFramework
+namespace Kaftar.Core.Data
 {
-    public class DataContext : IDataContext
+    internal class DataContext : IDataContext
     {
-        private readonly DbContextBase _dbContext;
+        private DbContextBase _dbContext;
 
-        public DataContext(DbContextBase dbContext)
+        public ISetDataContext Data { get; }
+
+        internal DataContext(ISetDataContext setDataContext, DbContextBase dbContext)
         {
+            Data = setDataContext;
             _dbContext = dbContext;
         }
-        public DbSet<TEntity> Set<TEntity>() 
-            where TEntity : class,IEntity
-        {
-            return _dbContext.Set<TEntity>();
-        }
-        public void Update<TEntity>(TEntity entity) where TEntity : class, IEntity
-        {
-            _dbContext.Set<TEntity>().Attach(entity);
-            _dbContext.Entry(entity).State= EntityState.Modified;
-        }
+
         public virtual int SaveChanges()
         {
             return _dbContext.SaveChanges();
@@ -29,6 +22,12 @@ namespace Kaftar.Core.EntityFramework
         public virtual async Task<int> SaveChangesAsync()
         {
             return await _dbContext.SaveChangesAsync();
+        }
+
+        public void Dispose()
+        {
+            Data.Dispose();
+            _dbContext.Dispose();
         }
     }
 

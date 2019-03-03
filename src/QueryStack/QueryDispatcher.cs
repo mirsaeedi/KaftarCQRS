@@ -5,6 +5,7 @@ using Kaftar.Core.Cqrs.CRUD;
 using Kaftar.Core.Cqrs.QueryStack.Queries;
 using Kaftar.Core.Cqrs.QueryStack.QueryResults;
 using Kaftar.Core.CQRS.QueryStack.QueryHandler;
+using Kaftar.Core.Data;
 using Kaftar.Core.EntityFramework;
 
 namespace Kaftar.Core.Cqrs.QueryStack

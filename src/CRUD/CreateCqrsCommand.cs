@@ -1,5 +1,5 @@
 ﻿using Kaftar.Core.Cqrs.CommandStack;
-using Kaftar.Core.Models;
+using Kaftar.Core.Data;
 
 namespace Kaftar.Core.Cqrs.CRUD
 {

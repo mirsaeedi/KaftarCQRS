@@ -1,12 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Description>Kaftar provides a structure to facilitate designing the application layer of your program in CQRS</Description>
+    <PackageProjectUrl>https://github.com/mirsaeedi/KaftarCQRS</PackageProjectUrl>
+    <Version>0.0.9</Version>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.1" />

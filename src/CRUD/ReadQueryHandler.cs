@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Kaftar.Core.CQRS.QueryStack.QueryHandler;
-using Kaftar.Core.Models;
+using Kaftar.Core.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kaftar.Core.Cqrs.CRUD

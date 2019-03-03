@@ -1,9 +1,9 @@
-﻿using Kaftar.Core.Models;
+﻿using System;
 using System.Linq;
 
-namespace Kaftar.Core.EntityFramework
+namespace Kaftar.Core.Data
 {
-    public interface IReadOnlyDataContext
+    public interface IReadOnlyDataContext:IDisposable
     {
         IQueryable<TEntity> Set<TEntity>() where TEntity : class, IEntity;
     }

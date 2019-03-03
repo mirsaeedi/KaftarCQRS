@@ -1,40 +1,33 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Kaftar.Core.Cqrs.QueryStack.Queries;
 using Kaftar.Core.EntityFramework;
-using Kaftar.Core.Models;
+using Kaftar.Core.Data;
+using CqrsSample.Core.CQRS;
 
 namespace Kaftar.Core.Cqrs.CommandStack
 {
     public abstract class CommandHandler<TCommand, TCommandResult> : ICommandHandler<TCommand, TCommandResult>
         where TCommand : CqrsCommand
-        where TCommandResult : CqrsCommandResult
+        where TCommandResult : CqrsCommandResult,new()
     {
-        internal IDataContext InnerDataContext { get;  set; }
+        internal IDataContext DataContext { get;  set; }
         protected ISetDataContext SetDataContext { get; private set; }
-        protected bool ParentOfChain { get; set; }
-        internal IEntity CommandEntity { get; set; }
-        internal TCommand Command { get; set; }
-
-        public CommandHandler()
-        {
-            ParentOfChain = true;
-        }
+        protected IEntity CommandEntity { get; set; }
 
         public async Task<TCommandResult> Execute(TCommand command)
         {
-            Command = command;
+            SaveCommand(command);
+            TCommandResult commandResult = default;
 
             try
             {
-                SetDataContext = new SetDataContext(InnerDataContext);
-
-                if (ActivityAuthorizationIsConfirmed(command))
+                if (await ActivityAuthorizationIsConfirmed(command))
                 {
-                    SaveCommand(command);
-
                     GetLock();
 
-                    var commandResult = await PreExecutionValidation(command);
+                    commandResult = await PreExecutionValidation(command);
 
                     if (commandResult.MetaData.WasSuccesfull)
                     {
@@ -44,17 +37,13 @@ namespace Kaftar.Core.Cqrs.CommandStack
 
                     commandResult.MetaData.ResultDateTime = DateTime.Now;
 
-                    SaveCommandResult(commandResult);
-
-                    if(commandResult.MetaData.PersistData && ParentOfChain)
-                        InnerDataContext.SaveChanges();
+                    if (commandResult.MetaData.WasSuccesfull)
+                       await DataContext.SaveChangesAsync();
 
                     if (commandResult.MetaData.WasSuccesfull)
                         await OnSucess(command, commandResult);
                     else
                         await OnFail(null, command, commandResult);
-
-                    return commandResult;
                 }
                 else
                 {
@@ -63,13 +52,18 @@ namespace Kaftar.Core.Cqrs.CommandStack
             }
             catch (Exception exception)
             {
-                return HandleFailed(exception, command);
+                commandResult = await HandleFailed(exception, command);
             }
             finally
             {
+                SaveCommandResult(commandResult);
                 ReleaseLock();
             }
+
+            return commandResult;
         }
+
+        #region Concurrency Mechanism
 
         protected virtual void GetLock()
         {
@@ -81,49 +75,58 @@ namespace Kaftar.Core.Cqrs.CommandStack
 
         }
 
-        private TCommandResult HandleFailed(Exception exception, TCommand command)
+        #endregion
+
+        private async Task<TCommandResult> HandleFailed(Exception exception, TCommand command)
         {
-            return null;
+            var commandResult = new TCommandResult()
+            {
+                MetaData = new CqrsMessageResultMetaData(0, null, DateTime.Now, command.Guid)
+            };
+
+            await OnFail(exception,  command, commandResult);
+
+            return commandResult;
         }
 
-        protected virtual bool ActivityAuthorizationIsConfirmed(TCommand command)
+        protected TCommandResult Ok(TCommand command)
         {
-            return true;
+            return new TCommandResult()
+            {
+                MetaData = new CqrsMessageResultMetaData(0, null, DateTime.Now, command.Guid)
+            };
+        }
+
+
+        #region Template
+
+        protected virtual Task<bool> ActivityAuthorizationIsConfirmed(TCommand command)
+        {
+            return Task.FromResult(true);
         }
 
         protected abstract Task Handle(TCommand command);
+
+        protected virtual Task OnSucess(TCommand command, TCommandResult commandResult) { return Task.CompletedTask; }
+
+        protected virtual Task OnFail(Exception exception, TCommand command, TCommandResult commandResult) { return Task.CompletedTask; }
+
+        protected virtual Task PostExecutionValidate(TCommand command, TCommandResult commandResult) { return Task.CompletedTask; }
+
+        protected virtual Task<TCommandResult> PreExecutionValidation(TCommand command)
+        {
+            return Task.FromResult(Ok(command));
+        }
+
+        #endregion
+
+        #region Save Query and QeuryResult
 
         protected virtual void SaveCommand(TCommand command) { }
 
         protected virtual void SaveCommandResult(TCommandResult commandResult) { }
 
-        protected virtual async Task OnSucess(TCommand command, TCommandResult commandResult) { }
-
-        protected virtual async Task OnFail(Exception exception, TCommand command, TCommandResult commandResult) {  }
-
-        protected virtual TCommandResult CreateFailedResult(Exception exception, TCommand command)
-        {
-            return new CqrsCommandResult(-100, exception.ToString(),command) as TCommandResult;
-        }
-
-        protected virtual async Task PostExecutionValidate(TCommand command, TCommandResult commandResult) {  }
-
-        protected virtual async Task<TCommandResult> PreExecutionValidation(TCommand command)
-        {
-            return OkResult();
-        }
-
-        protected TCommandResult OkResult()
-        {
-            return Activator.CreateInstance(typeof(TCommandResult), 0, null, Command)
-                as TCommandResult;
-        }
-
-        protected TCommandResult FailedExceptionResult()
-        {
-            return Activator.CreateInstance(typeof(TCommandResult), 0, null, Command)
-                as TCommandResult;
-        }
-
+        #endregion
     }
+
 }

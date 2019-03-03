@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Features.Metadata;
 using Kaftar.Core.Cqrs.CRUD;
+using Kaftar.Core.Data;
 using Kaftar.Core.EntityFramework;
 
 namespace Kaftar.Core.Cqrs.CommandStack
@@ -49,7 +50,7 @@ namespace Kaftar.Core.Cqrs.CommandStack
 
             var handler =
                 _context.Resolve<CommandHandler<TCommand, CqrsCommandResult>>();
-            handler.InnerDataContext = dataContext;
+            handler.DataContext = dataContext;
             return await handler.Execute(command);
         }
 

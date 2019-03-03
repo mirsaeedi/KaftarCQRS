@@ -5,7 +5,12 @@ namespace Kaftar.Core.Cqrs.CommandStack
 {
     public class CqrsCommandResult
     {
-        public CqrsMessageResultMetaData MetaData { get; private set; }
+        public CqrsMessageResultMetaData MetaData { get; internal set; }
+
+        public CqrsCommandResult()
+        {
+
+        }
 
         public CqrsCommandResult(int resultCode, string description, CqrsCommand command)
         {

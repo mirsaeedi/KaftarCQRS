@@ -1,6 +1,5 @@
-﻿using Kaftar.Core.Models;
-
-namespace Kaftar.Core.EntityFramework.Events.Handlers
+﻿
+namespace Kaftar.Core.Data.Events   
 {
     public interface ICreateHandler<T> where T:IEntity
     {

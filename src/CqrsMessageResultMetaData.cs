@@ -4,12 +4,12 @@ namespace CqrsSample.Core.CQRS
 {
     public class CqrsMessageResultMetaData
     {
-        internal CqrsMessageResultMetaData(int resultCode,string description,DateTime dateTime,Guid messageGuid)
+        internal CqrsMessageResultMetaData(int resultCode,string description,DateTime dateTime,Guid commandGuid)
         {
             ResultCode = resultCode;
             ResultDescription = description;
             ResultDateTime = dateTime;
-            MessageGuid = messageGuid;
+            CommandGuid = commandGuid;
         }
 
         public int ResultCode { get; set; }
@@ -18,14 +18,8 @@ namespace CqrsSample.Core.CQRS
 
         public DateTime ResultDateTime { get; internal set; }
 
-        public Guid MessageGuid { get; private set; }
+        public Guid CommandGuid { get; private set; }
 
         public bool WasSuccesfull => ResultCode == 0;
-
-        public bool ServerExceptionOccured => ResultCode < 0;
-
-        public bool ValidationFailed => ResultCode > 0;
-
-        public bool PersistData => ResultCode >= 0 && ResultCode<500 ;
     }
 }

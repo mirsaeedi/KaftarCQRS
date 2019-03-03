@@ -1,4 +1,4 @@
-﻿using Kaftar.Core.Models;
+﻿using Kaftar.Core.Data;
 
 namespace Kaftar.Core.EntityFramework.Events.Handlers
 {

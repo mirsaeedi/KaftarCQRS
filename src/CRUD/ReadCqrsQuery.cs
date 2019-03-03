@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Kaftar.Core.Cqrs.QueryStack.Queries;
-using Kaftar.Core.Models;
+using Kaftar.Core.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kaftar.Core.Cqrs.CRUD
@@ -16,7 +16,7 @@ namespace Kaftar.Core.Cqrs.CRUD
         }
         public TEntity Entity { get; set; }
 
-        public Func<DbQuery<TEntity>, IQueryable<TEntity>> QueryConfiguration;
+        public Func<IQueryable<TEntity>, IQueryable<TEntity>> QueryConfiguration;
     }
 
 }

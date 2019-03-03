@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Kaftar.Core.Cqrs.QueryStack.Queries;
 using Kaftar.Core.Cqrs.QueryStack.QueryResults;
-using Kaftar.Core.EntityFramework;
+using Kaftar.Core.Data;
 
 namespace Kaftar.Core.CQRS.QueryStack.QueryHandler
 {
@@ -14,90 +14,91 @@ namespace Kaftar.Core.CQRS.QueryStack.QueryHandler
 
         public async Task<CqrsQueryResult<TQueryValueResult>> Execute(TQuery query)
         {
+            CqrsQueryResult<TQueryValueResult> queryResult = default;
+
             try
             {
-                if (ActivityAuthorizationIsConfirmed(query))
-                {
-                    SaveQuery(query);
+                SaveQuery(query);
 
-                    var queryResult = PreExecutionValidation(query);
+                if (await ActivityAuthorizationIsConfirmed(query))
+                {
+                    queryResult = await PreExecutionValidation(query);
 
                     if (queryResult.MetaData.WasSuccesfull)
                     {
-                        var value = await GetResult(query);
-                        queryResult.Value = value;
-                        PostExecutionValidation(query, value, queryResult);
+                        queryResult.Value = await GetResult(query);
                     }
 
-                    SaveQueryResult(queryResult);
+                    queryResult.MetaData.ResultDateTime = DateTime.Now;
 
                     if (queryResult.MetaData.WasSuccesfull)
-                        OnSucess(query, queryResult);
+                        await OnSucess(query, queryResult);
                     else
-                        OnFail(null, query, queryResult);
-
-                    return queryResult;
+                        await OnFail(null, query, queryResult);
                 }
                 else
                 {
                     throw new Exception("Not Authorized");
                 }
+
             }
             catch (Exception exception)
             {
-                return HandleFailed(exception, query);
+                queryResult = await HandleFailed(exception, query);
             }
             finally
             {
-
+                SaveQueryResult(queryResult);
             }
+
+            return queryResult;
+
         }
 
-        private CqrsQueryResult<TQueryValueResult> HandleFailed(Exception exception, TQuery query)
-        {
-            return null;
-        }
+        #region Template
 
-        protected virtual bool ActivityAuthorizationIsConfirmed(TQuery query)
-        {
-            return true;
-        }
 
-        protected virtual void PostExecutionValidation(TQuery query, TQueryValueResult value, CqrsQueryResult<TQueryValueResult> queryResult)
+        protected virtual Task<bool> ActivityAuthorizationIsConfirmed(TQuery query)
         {
-
+            return Task.FromResult(true);
         }
 
         protected virtual async Task<TQueryValueResult> GetResult(TQuery query) { return default(TQueryValueResult); }
 
-        protected virtual CqrsQueryResult<TQueryValueResult> PreExecutionValidation(TQuery query)
+        protected virtual Task<CqrsQueryResult<TQueryValueResult>> PreExecutionValidation(TQuery query)
         {
-            return OkResult(query);
+            return Task.FromResult(Ok(query));
         }
+
+        protected virtual Task OnSucess(TQuery query, CqrsQueryResult<TQueryValueResult> queryResult) { return Task.CompletedTask; }
+
+        protected virtual Task OnFail(Exception exception, TQuery query, CqrsQueryResult<TQueryValueResult> queryResult) { return Task.CompletedTask; }
+
+
+        #endregion
+
+        protected CqrsQueryResult<TQueryValueResult> Ok(TQuery query)
+        {
+            return new CqrsQueryResult<TQueryValueResult>(0, query, default(TQueryValueResult));
+        }
+
+        private async Task<CqrsQueryResult<TQueryValueResult>> HandleFailed(Exception exception, TQuery query)
+        {
+            var queryResult = new CqrsQueryResult<TQueryValueResult>(-1,query,default);
+            await OnFail(exception, query, queryResult);
+
+            return queryResult;
+        }
+
+
+        #region Save Query and QeuryResult
 
         protected virtual void SaveQuery(TQuery query) { }
 
         protected virtual void SaveQueryResult(CqrsQueryResult<TQueryValueResult> queryResult) { }
 
-        protected virtual void OnSucess(TQuery query, CqrsQueryResult<TQueryValueResult> queryResult) { }
 
-        protected virtual void OnFail(Exception exception, TQuery query, CqrsQueryResult<TQueryValueResult> queryResult) { }
-
-        protected virtual CqrsQueryResult<TQueryValueResult> CreateFailedResult(Exception exception, TQuery query)
-        {
-            var result = new CqrsQueryResult<TQueryValueResult>(-100, exception.ToString(), query, null);
-            return result;
-        }
-
-        protected CqrsQueryResult<TQueryValueResult> OkResult(TQuery query)
-        {
-            return new CqrsQueryResult<TQueryValueResult>(0, query, null);
-        }
-
-        protected CqrsQueryResult<TQueryValueResult> FailedExceptionResult(TQuery query)
-        {
-            return new CqrsQueryResult<TQueryValueResult>(-1, "Unhandled Exception", query, null);
-        }
-
+        #endregion
     }
+
 }

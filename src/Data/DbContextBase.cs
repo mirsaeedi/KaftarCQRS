@@ -2,10 +2,9 @@
 using System.Linq;
 using System.Reflection;
 using System.Transactions;
-using Kaftar.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kaftar.Core.EntityFramework
+namespace Kaftar.Core.Data
 {
     public abstract class DbContextBase:DbContext
     {
