@@ -55,7 +55,25 @@ public class UpdateUserAddressCommandHandler : CommandHandler<UpdateUserAddressC
 
 As you can see, we do not need to `Save` the results inside the `Handle` method. The idea here is that the developer should not be concerned about anything except doing the business logic and forgetting about the database. 'DataContext' is a wrapper over `EntityFramework` which has all methods except `SaveChanges` and `SaveChangesAsync`. We believe removing these `Save` methods helps developers to think more in terms of domain. `SaveChangesAsync` will be called automatically after executing `Handle` by Kaftar.
 
-## Autorization
+## Authorization
+In Asp.Net, authorization is done using `Roles`. However, there are cases that we need more specific `Policies` for checking for authorization. In `Authorization` we check whether a user is allowed to execute the requested operation.  it is a compelete different concern from `Validation`. For example, according to our usecase a policy for authotization coulde be like _if a user has an ongoing order we do not want to allow them to change their address_. 
+
+```C#
+public class UpdateUserAddressCommandHandler : CommandHandler<UpdateUserAddressCommand, CqrsCommandResult>
+{
+    protected override Task Handle(UpdateUserAddressCommand command)
+    {
+        var user = DataContext.Set<User>().Single(q => q.Id == command.UserId);
+        user.Address = command.NewAddress;
+    }   
+
+    protected override bool ActivityAuthorizationIsConfirmed(UpdateUserAddressCommand command)
+    {
+        var hasOnGoingOrder = SetDataContext.Set<UserOrder>().Any(q => q.UserId == command.UserId && !q.HasDelivered);
+        return !hasOnGoingOrder;
+    }
+}
+```
 
 ## Validation
 
