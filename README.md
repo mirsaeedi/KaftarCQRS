@@ -59,6 +59,7 @@ As you can see, we do not need to `Save` the results inside the `Handle` method.
 
 ## Validation
 
+Almost always, we need to do a validation before perfoming the operation requested by user. Kaftar's Command Hanlders have a method named `PreExecutionValidation` to put the validation logic there. This method executed just before the `Handle` method. Return of `CqrsCommandResult` with anything other than 0 as `errorCode` will be considered as a failed validation. `OkResult` returns a success `CqrsCommandResult`.
 
 ```C#
 public class UpdateUserAddressCommandHandler : CommandHandler<UpdateUserAddressCommand, CqrsCommandResult>
