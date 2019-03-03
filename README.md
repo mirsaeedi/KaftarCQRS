@@ -1,16 +1,16 @@
 # Kaftar
 
-Kaftar provides you with the structure that you need for designing your application in [CQRS](https://martinfowler.com/bliki/CQRS.html) style. Kaftar helps you with coming up with a clear and well separated [Application Layer](). (It does not provide any facilities for separating read from writes in your physical infrastructure layer.)
+Kaftar provides you with the structure that you need for designing your application in [CQRS](https://martinfowler.com/bliki/CQRS.html) style. Kaftar helps you with coming up with a clear, consistent, and well separated [Application Layer](). (It does not provide any facilities for separating read from writes in your physical infrastructure layer.)
 
-`CQRS` is a way for writing the *Application Layer* in a very well-organized way. In this approach, any request from users is either a `Command` or a `Query` which gets executed by their corresponding `CommandHandler` or `QueryHandler` respectively. 
+`CQRS` is a way for writing the *Application Layer* in a very well-organized way. In this approach, any request from users is either a `Command` or a `Query` which gets executed by their corresponding `CommandHandler` or `QueryHandler` respectively. CQRS defines _Command_ and _Query_ as follows.
 
-**Command**: represents a user request that has a side effect by changing the system's state. Requests which lead to any of the _Update_, _Create_, _Delete_ operations on system's data, are considered as a command.
+* **Command**: represents a user request that has a side effect by changing the system's state. Requests which lead to any of the _Update_, _Create_, _Delete_ operations on system's data, are considered as a command.
 
-**Query**: represents a user request that has no side effect on system's state and only wants to _Read_ data. 
+* **Query**: represents a user request that has no side effect on system's state and only wants to _Read_ data. 
 
-In Kaftar, `CommandHanlder`s and `QueryHandler`s serve as a template for implementing different aspects of a usecase such as _Authorization_, _Validation_, _Handling Request_, _On Failure_ and _On Success_. Each of these aspects, implement in their own dedicated method. 
+In Kaftar, `CommandHanlder` and `QueryHandler` serve as a template for implementing different aspects of a usecase such as _Authorization_, _Validation_, _Handling Request_, _On Failure_ and _On Success_. Each of these aspects, implement in their own dedicated method. So, it forces developers to think about different concerns separately and have them in their own place instead of writing all different concerns in one method or in inconsistent ways. 
 
-Kaftar's structure results in a highly _Readable_, _Maintainable_ and _Consistent_ system design. Using Kaftar, when somebody wants to add or modify a feature in system, they exactly know what are the steps for implementing a new feature or where they need to look for if they want to modify something.
+Kaftar's structure results in a highly _Readable_, _Maintainable_ and _Consistent_ system design. As a result, when somebody wants to add or modify a feature in system, they exactly know what the steps are for implementing a new feature or where they need to look for if they want to modify something.
 
 
 # :moneybag: Advantages 
