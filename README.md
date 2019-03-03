@@ -1,6 +1,6 @@
 # Kaftar
 
-Kaftar is borned out of an experience I had in developing a large scale organizational software. It arms you with the structure that you need for designing your application in [CQRS](https://martinfowler.com/bliki/CQRS.html) style. Kaftar helps you with coming up with a clear, consistent, and well separated [Application Layer](). (It does not provide any facilities for separating read from writes in your physical infrastructure layer.)
+Kaftar is borned out of an experience I had in developing a large scale organizational software. It arms you with the structure that you need for designing your application in [Command Query Responsibility Segregation (CQRS)](https://martinfowler.com/bliki/CQRS.html) style. Every type of web application could reap the benefits of **Kaftar** regardless of complexity or requirements. It brings clarity to the structure of your application layer and provides an easy to follow framework for adding new usecases into the system. (It does not provide any facilities for separating read from writes in your physical infrastructure layer.)
 
 `CQRS` is a way for writing the *Application Layer* in a very well-organized way. In this approach, any request from users is either a `Command` or a `Query` which gets executed by their corresponding `CommandHandler` or `QueryHandler` respectively. CQRS defines _Command_ and _Query_ as follows.
 
@@ -29,13 +29,14 @@ Install-Package KaftarCQRS
 
 # :gun: Usage
 
-Kaftar promotes a design style called [Command Query Responsibility Segregation (CQRS)](). Every type of web application could reap the benefits of CQRS regardless of complexity or requirements. CQRS brings clarity to the structure of your application layer and provide easy to follow framework for adding new usecases into the system.
-
 In CQRS, each usecase maps to a _Command_ or _Query_.
 
 ## :pencil2: Commands
 
-CQRS sees any usecase that is supposed to change the state of system and write to database as a **Command**. So, for any request that is going to come from client and is supposed to write to database, at first we need to create a _Command_ object. **Command** is simply a POCO which consists of just fields. **A command is a poco object encompasses user's request**.
+To implement an usecase that is seen as a Command, we need to take 2 steps
+
+1. Create a _Command_ class. **Command** is a simple POCO that encompasses user's request.
+2. Create a _CommandHandler_ class to execute the _Command_.
 
 Let's say we want to implement a usecase for updating the user's address. First, we create a Command to define the form of request that can submit by client.
 
