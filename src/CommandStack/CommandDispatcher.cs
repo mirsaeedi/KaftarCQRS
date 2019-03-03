@@ -26,6 +26,7 @@ namespace Kaftar.Core.Cqrs.CommandStack
             command.UserId = userId;
 
             var dataContext = _context.Resolve<IDataContext>();
+            var setDataContext = _context.Resolve<ISetDataContext>();
 
             if (command.GetType().IsGenericType)
             {
@@ -50,7 +51,10 @@ namespace Kaftar.Core.Cqrs.CommandStack
 
             var handler =
                 _context.Resolve<CommandHandler<TCommand, CqrsCommandResult>>();
+
             handler.DataContext = dataContext;
+            handler.SetDataContext = setDataContext;
+
             return await handler.Execute(command);
         }
 
@@ -60,7 +64,10 @@ namespace Kaftar.Core.Cqrs.CommandStack
             var genericHandlerType = handlerType.MakeGenericType(typeArgs);
 
             dynamic createHandler = Activator.CreateInstance(genericHandlerType, _context.Resolve<IDataContext>());
-            createHandler.InnerDataContext = dataContext;
+
+            handler.DataContext = dataContext;
+            handler.SetDataContext = setDataContext;
+
             return await createHandler.Execute(command);
         }
     }

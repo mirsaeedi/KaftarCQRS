@@ -13,7 +13,7 @@ namespace Kaftar.Core.Cqrs.CommandStack
         where TCommandResult : CqrsCommandResult,new()
     {
         internal IDataContext DataContext { get;  set; }
-        protected ISetDataContext SetDataContext { get; private set; }
+        internal protected ISetDataContext SetDataContext { get; internal set; }
         protected IEntity CommandEntity { get; set; }
 
         public async Task<TCommandResult> Execute(TCommand command)
