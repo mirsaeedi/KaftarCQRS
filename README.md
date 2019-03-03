@@ -236,3 +236,14 @@ public class GetUserOrderQueryHandler:QueryHandler<GetUserOrdersQuery, GetUserOr
 }
 
 ```
+
+The `DataContext` in `QueryHandler` is a readonly wrapper over EntityFramework's `DbContext`. So, methods such as `Attach`, `Update`, and `SaveChanges` are not available in QueryHandlers. This way, we make sure nobody can perform write in the read pipeline of the system.
+
+In QueryHandlers, we have the same order of method calls that we have in Commands pipeline. 
+
+1. `ActivityAuthorizationIsConfirmed`
+2. `PreExecutionValidation`
+3. `GetResult`
+4. `OnSucess` after success or `OnFail` after failure in any of the previous steps.
+
+You can override any of the above methods as described already in the Command pipeline.
