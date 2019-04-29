@@ -14,21 +14,27 @@ namespace Kaftar.Core.Cqrs
         protected override void Load(ContainerBuilder builder)
         {
             builder
-             .RegisterType<QueryDispatcher>()
-             .InstancePerRequest();
+                .RegisterType<QueryDispatcher>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
 
             builder
                 .RegisterType<CommandDispatcher>()
-                .InstancePerRequest();
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
 
             builder.RegisterType<DataContext>()
-                .AsImplementedInterfaces();
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
 
             builder.RegisterType<ReadOnlyDataContext>()
-                .AsImplementedInterfaces();
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
 
             builder.RegisterType<SetDataContext>()
-                .AsImplementedInterfaces();
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
+
         }
     }
 }

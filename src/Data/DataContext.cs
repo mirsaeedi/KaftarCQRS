@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kaftar.Core.Data
@@ -9,7 +10,7 @@ namespace Kaftar.Core.Data
 
         public ISetDataContext Data { get; }
 
-        internal DataContext(ISetDataContext setDataContext, DbContextBase dbContext)
+        public DataContext(ISetDataContext setDataContext, DbContextBase dbContext)
         {
             Data = setDataContext;
             _dbContext = dbContext;

@@ -63,12 +63,12 @@ namespace Kaftar.Core.Cqrs.CommandStack
             Type[] typeArgs = { typeof(TCommand).GetGenericArguments()[0] };
             var genericHandlerType = handlerType.MakeGenericType(typeArgs);
 
-            dynamic createHandler = Activator.CreateInstance(genericHandlerType, _context.Resolve<IDataContext>());
+            dynamic handler = Activator.CreateInstance(genericHandlerType);
 
-            handler.DataContext = dataContext;
-            handler.SetDataContext = setDataContext;
+            handler.DataContext = _context.Resolve<IDataContext>();
+            handler.SetDataContext = _context.Resolve<ISetDataContext>();
 
-            return await createHandler.Execute(command);
+            return await handler.Execute(command);
         }
     }
 }

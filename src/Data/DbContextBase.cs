@@ -12,7 +12,7 @@ namespace Kaftar.Core.Data
         private string DefaultSchema { get; }
         private Assembly ModelAssembly { get;}
 
-        public DbContextBase(Assembly modelAssembly, DbContextOptions<DbContextBase> options, string defaultSchema = "dbo")
+        public DbContextBase(Assembly modelAssembly, DbContextOptions options, string defaultSchema = "dbo")
             :base(options)
         {
             ModelAssembly = modelAssembly;
@@ -127,16 +127,12 @@ namespace Kaftar.Core.Data
             
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            MapEntitiesToTables(modelBuilder);
-        }
-
-        private void MapEntitiesToTables(ModelBuilder modelBuilder)
+        /*private void MapEntitiesToTables(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema(DefaultSchema);
 
-            var entityMethod = typeof(ModelBuilder).GetMethod("Entity");
+            
+            var entityMethod = typeof(ModelBuilder).GetMethod("Entity",);
 
             var entityTypes = ModelAssembly
             .GetTypes()
@@ -147,6 +143,6 @@ namespace Kaftar.Core.Data
                 entityMethod.MakeGenericMethod(type)
                       .Invoke(modelBuilder, new object[] { });
             }
-        }
+        }*/
     }
 }
