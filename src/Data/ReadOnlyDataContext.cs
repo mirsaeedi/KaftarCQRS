@@ -5,9 +5,9 @@ namespace Kaftar.Core.Data
 {
     public class ReadOnlyDataContext : IReadOnlyDataContext
     {
-        private readonly DbContextBase _dbContext;
+        private readonly DbContext _dbContext;
 
-        public ReadOnlyDataContext(DbContextBase dbContext)
+        public ReadOnlyDataContext(DbContext dbContext)
         {
             _dbContext = dbContext;
         }

@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Kaftar.Core.Data
 {
-    public class SetDataContext: ISetDataContext
+    public class SetDataContext: ISetDataContext,IDisposable
     {
-        private readonly DbContextBase _dbContext;
+        private readonly DbContext _dbContext;
 
-        public SetDataContext(DbContextBase dbContext)
+        public SetDataContext(DbContext dbContext)
         {
             _dbContext = dbContext;
         }

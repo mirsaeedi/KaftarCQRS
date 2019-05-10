@@ -6,11 +6,11 @@ namespace Kaftar.Core.Data
 {
     internal class DataContext : IDataContext
     {
-        private DbContextBase _dbContext;
+        private DbContext _dbContext;
 
         public ISetDataContext Data { get; }
 
-        public DataContext(ISetDataContext setDataContext, DbContextBase dbContext)
+        public DataContext(ISetDataContext setDataContext, DbContext dbContext)
         {
             Data = setDataContext;
             _dbContext = dbContext;
