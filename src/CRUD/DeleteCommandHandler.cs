@@ -7,7 +7,6 @@ using Kaftar.Core.Data;
 namespace CqrsSample.Core.CQRS.CommandStack.CommandHandlers.CRUDCommandHandlers
 {
     internal class DeleteCommandHandler<TEntity> : CommandHandler<UpdateCqrsCommand<TEntity>, CqrsCommandResult>
-        where TEntity : IEntity
     {
         protected override Task Handle(UpdateCqrsCommand<TEntity> command)
         {

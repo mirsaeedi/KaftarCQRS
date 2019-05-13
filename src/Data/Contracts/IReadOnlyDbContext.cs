@@ -5,6 +5,6 @@ namespace Kaftar.Core.Data
 {
     public interface IReadOnlyDataContext:IDisposable
     {
-        IQueryable<TEntity> Set<TEntity>() where TEntity : class, IEntity;
+        IQueryable<TEntity> Set<TEntity>() where TEntity : class;
     }
 }

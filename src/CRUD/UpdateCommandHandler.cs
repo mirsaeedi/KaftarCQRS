@@ -6,7 +6,7 @@ namespace Kaftar.Core.Cqrs.CRUD
 {
 
     internal class UpdateCommandHandler<TEntity> : CommandHandler<UpdateCqrsCommand<TEntity>, CqrsCommandResult>
-        where TEntity : class, IEntity
+        where TEntity : class
     {
 
         protected override async Task Handle(UpdateCqrsCommand<TEntity> command)

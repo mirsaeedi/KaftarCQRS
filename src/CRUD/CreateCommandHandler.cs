@@ -5,7 +5,7 @@ using Kaftar.Core.Data;
 namespace Kaftar.Core.Cqrs.CRUD
 {
     internal class CreateCommandHandler<TEntity> : CommandHandler<CreateCqrsCommand<TEntity>, CqrsCommandResult>
-        where TEntity : class, IEntity
+        where TEntity : class
     {
 
         protected override async Task Handle(CreateCqrsCommand<TEntity> cqrsCommand)

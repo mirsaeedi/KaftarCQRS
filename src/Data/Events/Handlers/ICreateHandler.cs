@@ -1,7 +1,7 @@
 ﻿
 namespace Kaftar.Core.Data.Events   
 {
-    public interface ICreateHandler<T> where T:IEntity
+    public interface ICreateHandler<T> where T: class
     {
         void PreCreate(T entity);
 

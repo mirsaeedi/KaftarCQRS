@@ -17,7 +17,7 @@ namespace Kaftar.Core.Data
             _dbContext.Dispose();
         }
 
-        public IQueryable<TEntity> Set<TEntity>() where TEntity : class, IEntity
+        public IQueryable<TEntity> Set<TEntity>() where TEntity : class
         {
             return _dbContext.Set<TEntity>().AsNoTracking();
         }

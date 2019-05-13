@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Kaftar.Core.Cqrs.CRUD
 {
     public class ReadQueryHandler<TEntity>:QueryHandler<ReadCqrsQuery<TEntity>,TEntity[]>
-        where TEntity: class, IEntity
+        where TEntity: class
     {
         protected override async Task<TEntity[]> GetResult(ReadCqrsQuery<TEntity> query)
         {
