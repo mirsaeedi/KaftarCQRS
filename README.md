@@ -1,5 +1,6 @@
 # Kaftar
 
+
 Kaftar is borned out of an experience I had in developing a large scale organizational software. It arms you with the structure that you need for designing your application in [Command Query Responsibility Segregation (CQRS)](https://martinfowler.com/bliki/CQRS.html) style. Every type of web application could reap the benefits of **Kaftar** regardless of complexity or requirements. It brings clarity to the structure of your application layer and provides an easy to follow framework for adding new usecases into the system. (It does not provide any facilities for separating read from writes in your physical infrastructure layer.)
 
 `CQRS` is a way for writing the *Application Layer* in a very well-organized way. In this approach, any request from users is either a `Command` or a `Query` which gets executed by their corresponding `CommandHandler` or `QueryHandler` respectively. CQRS defines _Command_ and _Query_ as follows.
