@@ -24,6 +24,7 @@ Using kaftar you can easily get the following for free.
 
 You can easily have Kaftar installed in your project using [Nuget](https://www.nuget.org/packages/KaftarCQRS/0.0.9).
 
+
 ```powershell
 Install-Package KaftarCQRS
 ```
